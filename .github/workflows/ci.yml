@@ -136,8 +136,9 @@ jobs:
             matrix: linux
             container:
               18: docker://postgres:18
-        go:
+        postgres:
           - name: Go
+            postgres: 18
             golang: 1.26.0
     steps:
       - name: Checkout code
@@ -145,8 +146,8 @@ jobs:
       - name: Run setup ${{ matrix.go.golang }}
         uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.postgres.golang }}
-      - name: Install Linux pgbouncer dependencies
+          go-version: ${{ matrix.go.golang }}
+      - name: Install Linux dependencies
         if: matrix.os.matrix == 'linux'
         run: |
           sudo apt-get update --yes
