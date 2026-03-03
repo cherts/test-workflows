@@ -116,7 +116,7 @@ echo '"pgscv" "pgscv"' > /etc/pgbouncer/userlist.txt
 
 # run pgbouncer
 _logging "Run pgbouncer..."
-su - postgres -c "pgbouncer -d /etc/pgbouncer/pgbouncer.ini"
+su - postgres -c "/usr/sbin/pgbouncer -d /etc/pgbouncer/pgbouncer.ini"
 
 # check services availability
 _logging "Check services availability..."

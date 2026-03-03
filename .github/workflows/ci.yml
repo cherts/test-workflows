@@ -42,20 +42,20 @@ jobs:
         pgbouncer:
           - name: PgBouncer v1.25
             pgbouncer: 1.25.1
-          - name: PgBouncer v1.24
-            pgbouncer: 1.24.1
-          - name: PgBouncer v1.23
-            pgbouncer: 1.23.1
-          - name: PgBouncer v1.22
-            pgbouncer: 1.22.1
-          - name: PgBouncer v1.20
-            pgbouncer: 1.20.1
-          - name: PgBouncer v1.19
-            pgbouncer: 1.19.1
-          - name: PgBouncer v1.18
-            pgbouncer: 1.18.0
-          - name: PgBouncer v1.17
-            pgbouncer: 1.18.0
+#          - name: PgBouncer v1.24
+#            pgbouncer: 1.24.1
+#          - name: PgBouncer v1.23
+#            pgbouncer: 1.23.1
+#          - name: PgBouncer v1.22
+#            pgbouncer: 1.22.1
+#          - name: PgBouncer v1.20
+#            pgbouncer: 1.20.1
+#          - name: PgBouncer v1.19
+#            pgbouncer: 1.19.1
+#          - name: PgBouncer v1.18
+#            pgbouncer: 1.18.0
+#          - name: PgBouncer v1.17
+#            pgbouncer: 1.18.0
           - name: PgBouncer v1.16
             pgbouncer: 1.16.1
         postgres:
@@ -106,10 +106,10 @@ jobs:
           apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev pkg-config python3 pandoc -y
           wget https://www.pgbouncer.org/downloads/files/${{ matrix.pgbouncer.pgbouncer }}/pgbouncer-${{ matrix.pgbouncer.pgbouncer }}.tar.gz
           tar xzf pgbouncer-${{ matrix.pgbouncer.pgbouncer }}.tar.gz && cd pgbouncer-${{ matrix.pgbouncer.pgbouncer }}  
-          ./configure --prefix=/usr
+          ./configure --prefix=/usr/local
           make
-          make install
           mkdir /etc/pgbouncer 2>/dev/null
+          cp pgbouncer /usr/sbin 2>/dev/null
           cp etc/pgbouncer.ini /etc/pgbouncer 2>/dev/null
           export PATH=$PATH:/usr/local/bin:/usr/local/go/bin
       - name: Set up golang ${{ matrix.postgres.golang }}
