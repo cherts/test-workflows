@@ -98,14 +98,14 @@ jobs:
             gosec: 2.23.0
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Set up ${{ matrix.postgres.name }}
         if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
           apt-get update
           apt-get -y upgrade
-          apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev pkg-config python3 pandoc -y
+          apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev pkg-config python3 pandoc sudo -y
           wget https://www.pgbouncer.org/downloads/files/${{ matrix.postgres.pgbouncer }}/pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz
           tar xzf pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz && cd pgbouncer-${{ matrix.postgres.pgbouncer }}  
           ./configure --prefix=/usr/local && make && sudo make install
