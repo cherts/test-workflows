@@ -87,8 +87,8 @@ jobs:
       - name: Install Linux pgbouncer dependencies
         if: matrix.os.matrix == 'linux'
         run: |
-          apt-get update --yes
-          apt-get install --yes pgbouncer
+          sudo apt-get update --yes
+          sudo apt-get install --yes pgbouncer
       - name: Version
         run: |
           pgbouncer --version
@@ -122,8 +122,8 @@ jobs:
       - name: Install Linux pgbouncer dependencies
         if: matrix.os.matrix == 'linux'
         run: |
-          apt-get update --yes
-          apt-get install --yes pgbouncer
+          sudo apt-get update --yes
+          sudo apt-get install --yes pgbouncer
       - name: Version
         run: |
           go version
