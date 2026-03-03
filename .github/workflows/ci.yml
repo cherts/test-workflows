@@ -110,8 +110,10 @@ jobs:
           make
           mkdir /etc/pgbouncer 2>/dev/null
           cp pgbouncer /usr/sbin 2>/dev/null
-          cp etc/pgbouncer.ini /etc/pgbouncer 2>/dev/null
+          #cp etc/pgbouncer.ini /etc/pgbouncer 2>/dev/null
+          cp etc/pgbouncer-minimal.ini /etc/pgbouncer 2>/dev/null
           export PATH=$PATH:/usr/local/bin:/usr/local/go/bin
+          cat /etc/pgbouncer/pgbouncer.ini
       - name: Set up golang ${{ matrix.postgres.golang }}
         if: matrix.os.matrix == 'linux'
         uses: actions/setup-go@v6
