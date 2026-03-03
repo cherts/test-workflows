@@ -73,33 +73,35 @@ _logging "Run pg_bench..."
 su - postgres -c "pgbench -i -s 5 pgscv_fixtures"
 su - postgres -c "pgbench -T 5 pgscv_fixtures"
 
-# run logical standby postgres
-_logging "Run pg_basebackup (physical standby to logical)..."
-su - postgres -c "pg_basebackup -P -R -X stream -C -S standby_test_slot_physical -c fast -h 127.0.0.1 -p 5432 -U postgres -D ${LGDB1_DATADIR}"
-_logging "Creating physical standby postgresql.auto.conf..."
+if [[ "${PG_VER}" -ge 17 ]]; then
+    # run logical standby postgres
+    _logging "Run pg_basebackup (physical standby to logical)..."
+    su - postgres -c "pg_basebackup -P -R -X stream -C -S standby_test_slot_physical -c fast -h 127.0.0.1 -p 5432 -U postgres -D ${LGDB1_DATADIR}"
+    _logging "Creating physical standby postgresql.auto.conf..."
 cat >> ${LGDB1_DATADIR}/postgresql.auto.conf <<EOF
 port = 5435
 log_filename = 'postgresql-logical.log'
 EOF
-_logging "Run physical standby PostgreSQL v${PG_VER} via pg_ctl..."
-su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -w -t 30 -l /var/log/postgresql/startup-logical.log -D ${LGDB1_DATADIR} start"
-_logging "Wait 5 second..."
-sleep 5
-_logging "Stop physical standby PostgreSQL v${PG_VER} via pg_ctl..."
-su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -D ${LGDB1_DATADIR} stop"
-su - postgres -c "echo > ${LGDB1_DATADIR}/.pgpass"
-chmod 600 ${LGDB1_DATADIR}/.pgpass
-_logging "Run pg_createsubscriber..."
-su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_createsubscriber -D ${LGDB1_DATADIR} \
---publisher-server='user=postgres passfile=${LGDB1_DATADIR}/.pgpass channel_binding=disable dbname=pgscv_fixtures host=127.0.0.1 port=5432 fallback_application_name=walreceiver sslmode=disable sslnegotiation=postgres sslcompression=0 sslcertmode=disable sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=disable krbsrvname=postgres gssdelegation=0 target_session_attrs=any load_balance_hosts=disable' \
---database pgscv_fixtures \
---subscriber-username=postgres \
---replication-slot=pgscv_db_slot \
---publication=pgscv_db_publication \
---subscription=pgscv_db_subscription \
---verbose"
-_logging "Run logical standby PostgreSQL v${PG_VER} via pg_ctl..."
-su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -w -t 30 -l /var/log/postgresql/startup-logical.log -D ${LGDB1_DATADIR} start"
+    _logging "Run physical standby PostgreSQL v${PG_VER} via pg_ctl..."
+    su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -w -t 30 -l /var/log/postgresql/startup-logical.log -D ${LGDB1_DATADIR} start"
+    _logging "Wait 5 second..."
+    sleep 5
+    _logging "Stop physical standby PostgreSQL v${PG_VER} via pg_ctl..."
+    su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -D ${LGDB1_DATADIR} stop"
+    su - postgres -c "echo > ${LGDB1_DATADIR}/.pgpass"
+    chmod 600 ${LGDB1_DATADIR}/.pgpass
+    _logging "Run pg_createsubscriber..."
+    su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_createsubscriber -D ${LGDB1_DATADIR} \
+    --publisher-server='user=postgres passfile=${LGDB1_DATADIR}/.pgpass channel_binding=disable dbname=pgscv_fixtures host=127.0.0.1 port=5432 fallback_application_name=walreceiver sslmode=disable sslnegotiation=postgres sslcompression=0 sslcertmode=disable sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=disable krbsrvname=postgres gssdelegation=0 target_session_attrs=any load_balance_hosts=disable' \
+    --database pgscv_fixtures \
+    --subscriber-username=postgres \
+    --replication-slot=pgscv_db_slot \
+    --publication=pgscv_db_publication \
+    --subscription=pgscv_db_subscription \
+    --verbose"
+    _logging "Run logical standby PostgreSQL v${PG_VER} via pg_ctl..."
+    su - postgres -c "/usr/lib/postgresql/${PG_VER}/bin/pg_ctl -w -t 30 -l /var/log/postgresql/startup-logical.log -D ${LGDB1_DATADIR} start"
+fi
 
 _logging "Run pg_bench..."
 su - postgres -c "pgbench -T 5 pgscv_fixtures"
@@ -121,5 +123,7 @@ _logging "Check services availability..."
 pg_isready -t 10 -h 127.0.0.1 -p 5432 -U pgscv -d postgres
 pg_isready -t 10 -h 127.0.0.1 -p 5433 -U pgscv -d postgres
 pg_isready -t 10 -h 127.0.0.1 -p 5434 -U pgscv -d postgres
-pg_isready -t 10 -h 127.0.0.1 -p 5435 -U pgscv -d postgres
+if [[ "${PG_VER}" -ge 17 ]]; then
+    pg_isready -t 10 -h 127.0.0.1 -p 5435 -U pgscv -d postgres
+fi
 pg_isready -t 10 -h 127.0.0.1 -p 6432 -U pgscv -d pgbouncer
