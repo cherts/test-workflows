@@ -97,16 +97,19 @@ jobs:
             revive: 1.14.0
             gosec: 2.23.0
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
       - name: Set up ${{ matrix.postgres.name }}
         if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
           apt-get update
           apt-get -y upgrade
-          apt-get install -y vim make gcc git curl pgbouncer:${{ matrix.postgres.pgbouncer }}
+          apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev -y
+          wget https://www.pgbouncer.org/downloads/files/${{ matrix.postgres.pgbouncer }}/pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz
+          tar xzf pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz && cd pgbouncer-${{ matrix.postgres.pgbouncer }}  
+          ./configure --prefix=/usr/local && make && sudo make install
           curl -s -L https://go.dev/dl/go${{ matrix.postgres.golang }}.linux-amd64.tar.gz -o - | tar xzf - -C /usr/local
-          export PATH=$PATH:/usr/local/go/bin
+          export PATH=$PATH:/usr/local:bin:/usr/local/sbin:/usr/local/go/bin
           curl -s -L https://github.com/mgechev/revive/releases/download/v${{ matrix.postgres.revive }}/revive_linux_amd64.tar.gz | tar xzf - -C $(go env GOROOT)/bin revive
           curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOROOT)/bin v${{ matrix.postgres.gosec }}
           mkdir /opt/testing/
