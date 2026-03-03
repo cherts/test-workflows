@@ -106,12 +106,12 @@ jobs:
           apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev pkg-config python3 pandoc -y
           wget https://www.pgbouncer.org/downloads/files/${{ matrix.pgbouncer.pgbouncer }}/pgbouncer-${{ matrix.pgbouncer.pgbouncer }}.tar.gz
           tar xzf pgbouncer-${{ matrix.pgbouncer.pgbouncer }}.tar.gz && cd pgbouncer-${{ matrix.pgbouncer.pgbouncer }}  
-          ./configure --prefix=/usr/local
+          ./configure --prefix=/usr
           make
           make install
           mkdir /etc/pgbouncer 2>/dev/null
           cp etc/pgbouncer.ini /etc/pgbouncer 2>/dev/null
-          export PATH=$PATH:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin
+          export PATH=$PATH:/usr/local/bin:/usr/local/go/bin
       - name: Set up golang ${{ matrix.postgres.golang }}
         if: matrix.os.matrix == 'linux'
         uses: actions/setup-go@v6
