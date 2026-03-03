@@ -78,18 +78,6 @@ jobs:
             postgres: 18.3
             pgbouncer: 1.25.1
             golang: 1.26.0
-        task:
-          - name: Version
-            tox: core
-          - name: Twisted
-            tox: twisted
-          - name: asyncio
-            tox: asyncio
-#        exclude:
-#          - postgres:
-#              matrix: 18.2
-#          - os:
-#              matrix: windows
     steps:
       - uses: actions/checkout@v6
       - name: Set up ${{ matrix.postgres.name }}
