@@ -26,15 +26,15 @@ jobs:
             runs-on: ubuntu-latest
             matrix: linux
             container:
-              10: docker://postgres:10-alpine
-              11: docker://postgres:11-alpine
-              12: docker://postgres:12-alpine
-              13: docker://postgres:13-alpine
-              14: docker://postgres:14-alpine
-              15: docker://postgres:15-alpine
-              16: docker://postgres:16-alpine
-              17: docker://postgres:17-alpine
-              18: docker://postgres:18-alpine
+              10: docker://postgres:10
+              11: docker://postgres:11
+              12: docker://postgres:12
+              13: docker://postgres:13
+              14: docker://postgres:14
+              15: docker://postgres:15
+              16: docker://postgres:16
+              17: docker://postgres:17
+              18: docker://postgres:18
 #          - name: Windows
 #            runs-on: windows-latest
 #            matrix: windows
@@ -46,56 +46,74 @@ jobs:
             postgres: 10
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v11
             postgres: 11
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v12
             postgres: 12
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v13
             postgres: 13
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v14
             postgres: 14
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v15
             postgres: 15
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v16
             postgres: 16
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v17
             postgres: 17
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
           - name: PostgreSQL v18
             postgres: 18
             pgbouncer: 1.25.1
             golang: 1.26.0
+            revive: 1.14.0
+            gosec: 2.23.0
     steps:
       - uses: actions/checkout@v6
       - name: Set up ${{ matrix.postgres.name }}
         if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
-          apt-get update --yes
-          apt-get install -y postgresql-common
-          /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-          apt-get update --yes
-          apt-get install -y postgresql-${{ matrix.postgres.postgres }}
-      - name: Set up pgbouncer ${{ matrix.postgres.pgbouncer }}
-        if: matrix.os.matrix == 'linux'
-        run: |
-          apt-get update --yes
-          apt-get install --yes pgbouncer
+          apt-get update
+          apt-get -y upgrade
+          apt-get install -y vim make gcc git curl pgbouncer:${{ matrix.postgres.pgbouncer }}
+          curl -s -L https://go.dev/dl/go${{ matrix.postgres.golang }}.linux-amd64.tar.gz -o - | tar xzf - -C /usr/local
+          export PATH=$PATH:/usr/local/go/bin
+          curl -s -L https://github.com/mgechev/revive/releases/download/v${{ matrix.postgres.revive }}/revive_linux_amd64.tar.gz | tar xzf - -C $(go env GOROOT)/bin revive
+          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOROOT)/bin v${{ matrix.postgres.gosec }}
+          mkdir /opt/testing/
+          rm -rf /var/lib/apt/lists/*
       - name: Version
         run: |
+          go version
           pgbouncer --version
           postgres --version
   build:
