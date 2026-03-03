@@ -48,6 +48,16 @@ jobs:
             pgbouncer: 1.23.1
           - name: PgBouncer v1.22
             pgbouncer: 1.22.1
+          - name: PgBouncer v1.20
+            pgbouncer: 1.20.1
+          - name: PgBouncer v1.19
+            pgbouncer: 1.19.1
+          - name: PgBouncer v1.18
+            pgbouncer: 1.18.0
+          - name: PgBouncer v1.17
+            pgbouncer: 1.18.0
+          - name: PgBouncer v1.16
+            pgbouncer: 1.16.1
         postgres:
           - name: PostgreSQL v12
             postgres: 12
@@ -123,6 +133,14 @@ jobs:
           go version
           pgbouncer --version
           postgres --version
+      - name: Copy test environment script
+        if: matrix.os.matrix == 'linux'
+        run: |
+          cp prepare-test-environment.sh /opt/testing/
+          cp fixtures.sql /opt/testing/
+      - name: Run tests with PostgreSQL ${{ matrix.postgres.postgres }} and PgBouncer ${{ matrix.pgbouncer.pgbouncer }}
+        run: |
+          prepare-test-environment.sh ${{ matrix.postgres.postgres }}
   build:
     name: ${{ matrix.task.name }} ${{ matrix.os.name }} ${{ matrix.postgres.name }}
     runs-on: ${{ matrix.os.runs-on }}
