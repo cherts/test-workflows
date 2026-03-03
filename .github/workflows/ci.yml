@@ -84,16 +84,16 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
-          sudo apt-get update --yes
-          sudo apt-get install -y postgresql-common
-          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-          sudo apt-get update --yes
-          sudo apt-get install -y postgresql-${{ matrix.postgres.postgres }}
+          apt-get update --yes
+          apt-get install -y postgresql-common
+          /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          apt-get update --yes
+          apt-get install -y postgresql-${{ matrix.postgres.postgres }}
       - name: Set up pgbouncer ${{ matrix.postgres.pgbouncer }}
         if: matrix.os.matrix == 'linux'
         run: |
-          sudo apt-get update --yes
-          sudo apt-get install --yes pgbouncer
+          apt-get update --yes
+          apt-get install --yes pgbouncer
       - name: Version
         run: |
           pgbouncer --version
