@@ -109,7 +109,8 @@ jobs:
           ./configure --prefix=/usr/local
           make
           make install
-          mkdir /etc/pgbouncer 2>/dev/null || true
+          mkdir /etc/pgbouncer 2>/dev/null
+          cp etc/pgbouncer.ini /etc/pgbouncer 2>/dev/null
           export PATH=$PATH:/usr/local/bin:/usr/local/sbin:/usr/local/go/bin
       - name: Set up golang ${{ matrix.postgres.golang }}
         if: matrix.os.matrix == 'linux'
