@@ -115,6 +115,9 @@ sed -i -e 's/^;ignore_startup_parameters = .*$/ignore_startup_parameters = extra
 echo '"pgscv" "pgscv"' > /etc/pgbouncer/userlist.txt
 
 # run pgbouncer
+_logging "Show config pgbouncer..."
+su - postgres -c "cat /etc/pgbouncer/pgbouncer.ini"
+su - postgres -c "cat /etc/pgbouncer/userlist.txt"
 _logging "Run pgbouncer..."
 su - postgres -c "/usr/sbin/pgbouncer -d /etc/pgbouncer/pgbouncer.ini"
 
