@@ -97,14 +97,15 @@ jobs:
             revive: 1.14.0
             gosec: 2.23.0
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v6
       - name: Set up ${{ matrix.postgres.name }}
         if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
           apt-get update
           apt-get -y upgrade
-          apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev -y
+          apt-get install build-essential wget vim make gcc git curl libevent-dev libssl-dev pkg-config -y
           wget https://www.pgbouncer.org/downloads/files/${{ matrix.postgres.pgbouncer }}/pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz
           tar xzf pgbouncer-${{ matrix.postgres.pgbouncer }}.tar.gz && cd pgbouncer-${{ matrix.postgres.pgbouncer }}  
           ./configure --prefix=/usr/local && make && sudo make install
@@ -133,14 +134,15 @@ jobs:
             runs-on: ubuntu-latest
             matrix: linux
             container:
-              18: docker://postgres:18-alpine
+              18: docker://postgres:18
         postgres:
           - name: PostgreSQL v18
             postgres: 18.3
             pgbouncer: 1.25.1
             golang: 1.26.0
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
       - name: Run setup ${{ matrix.postgres.golang }}
         uses: actions/setup-go@v6
         with:
@@ -158,7 +160,7 @@ jobs:
   maybe_publish:
     name: Maybe Publish
     runs-on: ubuntu-latest
-    container: docker://postgres:18-alpine
+    container: docker://postgres:18
     needs:
       - test
       - build
