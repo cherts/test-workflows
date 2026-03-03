@@ -43,48 +43,53 @@ jobs:
 #            matrix: macos
         postgres:
           - name: PostgreSQL v10
-            postgres: 10.23
+            postgres: 10
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v11
-            postgres: 11.22
+            postgres: 11
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v12
-            postgres: 12.22
+            postgres: 12
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v13
-            postgres: 13.23
+            postgres: 13
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v14
-            postgres: 14.22
+            postgres: 14
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v15
-            postgres: 15.17
+            postgres: 15
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v16
-            postgres: 16.13
+            postgres: 16
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v17
-            postgres: 17.9
+            postgres: 17
             pgbouncer: 1.25.1
             golang: 1.26.0
           - name: PostgreSQL v18
-            postgres: 18.3
+            postgres: 18
             pgbouncer: 1.25.1
             golang: 1.26.0
     steps:
       - uses: actions/checkout@v6
       - name: Set up ${{ matrix.postgres.name }}
-        if: job.container == ''
+        if: matrix.os.matrix == 'linux'
         run: |
           echo "Set up ${{ matrix.postgres.name }}"
-      - name: Install Linux pgbouncer dependencies
+          sudo apt-get update --yes
+          sudo apt-get install -y postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update --yes
+          sudo apt-get install -y postgresql-${{ matrix.postgres.postgres }}
+      - name: Set up pgbouncer ${{ matrix.postgres.pgbouncer }}
         if: matrix.os.matrix == 'linux'
         run: |
           sudo apt-get update --yes
