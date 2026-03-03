@@ -126,7 +126,8 @@ jobs:
       - name: Prepare testing environment
         if: matrix.os.matrix == 'linux'
         run: |
-          mkdir /opt/testing/
+          mkdir /opt/testing
+          chmod 755 /opt/testing
           rm -rf /var/lib/apt/lists/*
       - name: Version
         run: |
@@ -140,7 +141,7 @@ jobs:
           cp fixtures.sql /opt/testing/
       - name: Run tests with PostgreSQL ${{ matrix.postgres.postgres }} and PgBouncer ${{ matrix.pgbouncer.pgbouncer }}
         run: |
-          prepare-test-environment.sh ${{ matrix.postgres.postgres }}
+          /opt/testing/prepare-test-environment.sh ${{ matrix.postgres.postgres }}
   build:
     name: ${{ matrix.task.name }} ${{ matrix.os.name }} ${{ matrix.postgres.name }}
     runs-on: ${{ matrix.os.runs-on }}
