@@ -172,14 +172,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Run setup ${{ matrix.golang.golang }}
-        uses: actions/setup-go@v6
-        with:
-          go-version: ${{ matrix.golang.golang }}
-      - name: Install Linux dependencies
-        if: matrix.os.matrix == 'linux'
-        run: |
-          apt-get update --yes
       - name: Version
         run: |
           go version
