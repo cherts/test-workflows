@@ -3,12 +3,12 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - dev*
     tags:
       - v*
   pull_request:
     branches:
-      - "*"
+      - "main"
   #schedule:
     # Daily at 07:13
     #- cron: '13 7 * * *'
