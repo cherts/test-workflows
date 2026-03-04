@@ -152,9 +152,9 @@ jobs:
         run: |
           /opt/testing/prepare-test-environment.sh ${{ matrix.postgres.postgres }}
   build:
-    name: ${{ matrix.task.name }} ${{ matrix.os.name }} ${{ matrix.postgres.name }}
+    name: ${{ matrix.task.name }} ${{ matrix.os.name }} ${{ matrix.golang.name }}
     runs-on: ${{ matrix.os.runs-on }}
-    container: ${{ matrix.os.container[matrix.postgres.postgres] }}
+    container: ${{ matrix.os.container[matrix.golang.golang] }}
     needs:
       - test
     strategy:
@@ -165,18 +165,17 @@ jobs:
             runs-on: ubuntu-latest
             matrix: linux
             container:
-              18: docker://postgres:18
-        postgres:
+              126: docker://golang:1.26.0
+        golang:
           - name: Go
-            postgres: 18
             golang: 1.26.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      - name: Run setup ${{ matrix.postgres.golang }}
+      - name: Run setup ${{ matrix.golang.golang }}
         uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.postgres.golang }}
+          go-version: ${{ matrix.golang.golang }}
       - name: Install Linux dependencies
         if: matrix.os.matrix == 'linux'
         run: |
@@ -184,19 +183,19 @@ jobs:
       - name: Version
         run: |
           go version
-  maybe_publish:
-    name: Maybe Publish
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
-    container: docker://postgres:18
+    container: docker://golang:1.26.0
     needs:
       - test
       - build
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Maybe publish
+      - name: Publish
         run: |
-          echo "Maybe publish"
+          echo "Publishing this"
         env:
           PG_USERNAME: ${{ secrets.PG_USERNAME }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
@@ -206,7 +205,7 @@ jobs:
     needs:
       - test
       - build
-      - maybe_publish
+      - publish
     steps:
       - name: This
         run: |
