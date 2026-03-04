@@ -141,7 +141,5 @@ _logging "Check services availability..."
 pg_isready -t 10 -h 127.0.0.1 -p 5432 -U pgscv -d postgres
 pg_isready -t 10 -h 127.0.0.1 -p 5433 -U pgscv -d postgres
 pg_isready -t 10 -h 127.0.0.1 -p 5434 -U pgscv -d postgres
-if [[ "${PG_VER}" -ge 17 ]]; then
-    pg_isready -t 10 -h 127.0.0.1 -p 5435 -U pgscv -d postgres
-fi
+pg_isready -t 10 -h 127.0.0.1 -p 5435 -U pgscv -d postgres
 pg_isready -t 10 -h 127.0.0.1 -p 6432 -U pgscv -d pgbouncer

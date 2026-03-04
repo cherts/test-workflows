@@ -114,6 +114,9 @@ jobs:
           cp pgbouncer /usr/sbin
           cp etc/pgbouncer.ini /etc/pgbouncer
           export PATH=$PATH:/usr/local/bin:/usr/local/go/bin
+          cd ..
+          rm -f pgbouncer-${{ matrix.pgbouncer.pgbouncer }}.tar.gz
+          rm -rf pgbouncer-${{ matrix.pgbouncer.pgbouncer }}
       - name: Set up golang ${{ matrix.postgres.golang }}
         if: matrix.os.matrix == 'linux'
         uses: actions/setup-go@v6
@@ -175,7 +178,7 @@ jobs:
       - name: Install Linux dependencies
         if: matrix.os.matrix == 'linux'
         run: |
-          sudo apt-get update --yes
+          apt-get update --yes
       - name: Version
         run: |
           go version
