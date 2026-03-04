@@ -109,8 +109,8 @@ jobs:
           cd pgbouncer-${{ matrix.pgbouncer.pgbouncer }}
           ./configure --prefix=/usr/local
           make
-          mkdir /etc/pgbouncer
-          chown -R postgres:postgres /etc/pgbouncer
+          mkdir /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer
+          chown -R postgres:postgres /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer
           cp pgbouncer /usr/sbin
           cp etc/pgbouncer.ini /etc/pgbouncer
           export PATH=$PATH:/usr/local/bin:/usr/local/go/bin
