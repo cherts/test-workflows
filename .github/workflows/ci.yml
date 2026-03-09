@@ -38,8 +38,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout ${{ env.OPENWRT_VERSION }}
-          git pull
           git add Packages
           git add Packages.*
           git add *.ipk
