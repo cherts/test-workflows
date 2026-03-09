@@ -29,10 +29,10 @@ jobs:
 
       - name: Build
         run: |
-          touch Packages
-          touch Packages.gz
-          touch Packages.sig
-          touch test.ipk
+          date +"%Y-%m-%d %H:%M:%S" > Packages
+          date +"%Y-%m-%d %H:%M:%S" > Packages.gz
+          date +"%Y-%m-%d %H:%M:%S" > Packages.sig
+          date +"%Y-%m-%d %H:%M:%S" > test.ipk
 
       - name: Commit changes
         run: |
