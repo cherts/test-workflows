@@ -32,6 +32,7 @@ jobs:
           touch Packages
           touch Packages.gz
           touch Packages.sig
+          touch test.ipk
 
       - name: Commit changes
         run: |
